@@ -39,6 +39,9 @@ public sealed class Controller2DUi : MonoBehaviour, ISortingMember
     private readonly List<int> _touchIds = new();
 
     [SerializeField] private float _interactionPadding = 20f;
+    
+    private ControllerData _controllerData;
+    private Vector2 _initialSizeDelta;
 
 
     private void Awake()
@@ -67,11 +70,37 @@ public sealed class Controller2DUi : MonoBehaviour, ISortingMember
         InitializeButtonInteraction();
         _verticalAxisController = new AxisController(data.VerticalAxisControl);
         _horizontalAxisController = new AxisController(data.HorizontalAxisControl);
-        _title.text = data.Name;
-        var rectTransform = GetComponent<RectTransform>();
-        var initialSizeDelta = rectTransform.sizeDelta;
-        rectTransform.sizeDelta = new Vector2(initialSizeDelta.x * data.Width, initialSizeDelta.y);
+        _initialSizeDelta = GetComponent<RectTransform>().sizeDelta;
         InitializeSorting();
+        OnEnabledChanged(this, data.Enabled);
+        OnWidthChanged(this, data.Width);
+        OnNameChanged(this, data.Name);
+        data.EnabledChanged += OnEnabledChanged;
+        data.WidthChanged += OnWidthChanged;
+        data.NameChanged += OnNameChanged;
+        _controllerData = data;
+    }
+
+    private void OnNameChanged(object sender, string text)
+    {
+        _title.text = text;
+    }
+
+    private void OnWidthChanged(object sender, float width)
+    {
+        var rectTransform = GetComponent<RectTransform>();
+        rectTransform.sizeDelta = new Vector2(_initialSizeDelta.x * width, _initialSizeDelta.y);
+    }
+
+    private void OnEnabledChanged(object sender, bool e)
+    {
+        _rootTransform.gameObject.SetActive(e);
+    }
+
+    private void OnDestroy()
+    {
+        _controllerData.EnabledChanged -= OnEnabledChanged;
+        _controllerData.WidthChanged -= OnWidthChanged;
     }
 
     private void InitializeButtonInteraction()

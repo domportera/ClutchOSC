@@ -1,5 +1,4 @@
-﻿using System.Globalization;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
@@ -14,6 +13,10 @@ public sealed class FaderControlUi : MonoBehaviour, ISortingMember
     [SerializeField] private Text _valueText;
     [SerializeField] private Button _sortLeftButton;
     [SerializeField] private Button _sortRightButton;
+    
+    private ControllerData _controllerData;
+    private RectTransform _rectTransform;
+    private Vector2 _initialSizeDelta;
 
     private void Awake()
     {
@@ -27,7 +30,7 @@ public sealed class FaderControlUi : MonoBehaviour, ISortingMember
             _rootTransform = GetComponent<RectTransform>();
         _axisController = new AxisController(controlData.Settings);
         var rectTransform = GetComponent<RectTransform>();
-        var initialSizeDelta = rectTransform.sizeDelta;
+        _initialSizeDelta = rectTransform.sizeDelta;
 
         var displayName = controlData.Name;
         _label.text = displayName;
@@ -35,8 +38,28 @@ public sealed class FaderControlUi : MonoBehaviour, ISortingMember
         InitializeFaderInteraction();
         InitializeSortingButtons();
         
-        var width = controlData.Width;
-        rectTransform.sizeDelta = new Vector2(initialSizeDelta.x * width, initialSizeDelta.y);
+        controlData.EnabledChanged += OnEnabledChanged;
+        controlData.WidthChanged += OnWidthChanged;
+        OnWidthChanged(this, controlData.Width);
+        OnEnabledChanged(this, controlData.Enabled);
+        _controllerData = controlData;
+    }
+
+    private void OnWidthChanged(object sender, float width)
+    {
+        var rectTransform = GetComponent<RectTransform>();
+        rectTransform.sizeDelta = new Vector2(_initialSizeDelta.x * width, _initialSizeDelta.y);
+    }
+
+    private void OnEnabledChanged(object sender, bool e)
+    {
+        _rootTransform.gameObject.SetActive(e);
+    }
+
+    private void OnDestroy()
+    {
+        _controllerData.EnabledChanged -= OnEnabledChanged;
+        _controllerData.WidthChanged -= OnWidthChanged;
     }
 
     // Update is called once per frame

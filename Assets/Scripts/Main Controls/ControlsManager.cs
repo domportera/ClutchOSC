@@ -188,14 +188,6 @@ public class ControlsManager : MonoBehaviour
         }
     }
 
-
-    public static void RespawnController(ControllerData config)
-    {
-        config.InvokeDestroyed();
-        _ = InstantiateControllerUi(config);
-       FixControllerSorting(); 
-    }
-
     //used to pair prefabs with their control type
     [Serializable]
     private struct ControllerPrefabs

@@ -25,7 +25,12 @@ public abstract class ControllerOptionsPanel : MonoBehaviour
     {
         NameField.onValueChanged.AddListener(RemoveProblemCharactersInNameField);
         ApplyButton.onClick.AddListener(Apply);
-        CloseButton.onClick.AddListener(() => gameObject.SetActive(false));
+        CloseButton.onClick.AddListener(Close);
+    }
+
+    private void Close()
+    {
+        gameObject.SetActive(false);
     }
 
     protected void OnEnable()
@@ -75,7 +80,7 @@ public abstract class ControllerOptionsPanel : MonoBehaviour
         var width = ConvertSliderValueToWidth((int)WidthSlider.value);
         _controlData.SetWidth(width);
         UIManager.Instance.RefreshFaderLayoutGroup();
-        ControlsManager.RespawnController(_controlData);
+        Close();
     }
 
     #region Width

@@ -76,13 +76,7 @@ public abstract class ControllerData
         EnabledChanged?.Invoke(this, enabled);
         _enabled = enabled;
     }
-
-    public void Dispose()
-    {
-        Disposed?.Invoke(this, EventArgs.Empty);
-    }
     
-    public event EventHandler Disposed;
     public event EventHandler<bool> EnabledChanged;
     public event EventHandler<string> NameChanged;
     public event EventHandler<int> PositionChanged;
