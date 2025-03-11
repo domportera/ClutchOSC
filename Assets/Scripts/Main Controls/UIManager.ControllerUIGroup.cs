@@ -75,6 +75,8 @@ public partial class UIManager
             {
                 SortingImpl.RectTransform.SetAsLastSibling();
             }
+
+            ControlsManager.ForceToggleWidthRefresh();
         }
 
         public void DestroySelf()

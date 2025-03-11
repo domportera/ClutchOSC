@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using Faders;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
@@ -73,7 +74,6 @@ public sealed class Controller2DUi : MonoBehaviour, ISortingMember
         _initialSizeDelta = GetComponent<RectTransform>().sizeDelta;
         InitializeSorting();
         OnEnabledChanged(this, data.Enabled);
-        OnWidthChanged(this, data.Width);
         OnNameChanged(this, data.Name);
         data.EnabledChanged += OnEnabledChanged;
         data.WidthChanged += OnWidthChanged;
@@ -86,10 +86,10 @@ public sealed class Controller2DUi : MonoBehaviour, ISortingMember
         _title.text = text;
     }
 
-    private void OnWidthChanged(object sender, float width)
+    private void OnWidthChanged(object sender, ControllerData.WidthArgs args)
     {
         var rectTransform = GetComponent<RectTransform>();
-        rectTransform.sizeDelta = new Vector2(_initialSizeDelta.x * width, _initialSizeDelta.y);
+        Width.UpdateWidth(rectTransform, args, _initialSizeDelta);
     }
 
     private void OnEnabledChanged(object sender, bool e)

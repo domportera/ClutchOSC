@@ -1,4 +1,6 @@
-﻿using UnityEngine;
+﻿using System.Linq;
+using Faders;
+using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
@@ -39,7 +41,6 @@ public sealed class FaderControlUi : MonoBehaviour, ISortingMember
         controlData.EnabledChanged += OnEnabledChanged;
         controlData.WidthChanged += OnWidthChanged;
         controlData.NameChanged += OnNameChanged;
-        OnWidthChanged(this, controlData.Width);
         OnEnabledChanged(this, controlData.Enabled);
         OnNameChanged(this, controlData.Name);
         _controllerData = controlData;
@@ -51,10 +52,10 @@ public sealed class FaderControlUi : MonoBehaviour, ISortingMember
         name = displayName + " Fader";
     }
 
-    private void OnWidthChanged(object sender, float width)
+    private void OnWidthChanged(object sender, ControllerData.WidthArgs args)
     {
         var rectTransform = GetComponent<RectTransform>();
-        rectTransform.sizeDelta = new Vector2(_initialSizeDelta.x * width, _initialSizeDelta.y);
+        Width.UpdateWidth(rectTransform, args, _initialSizeDelta);
     }
 
     private void OnEnabledChanged(object sender, bool e)

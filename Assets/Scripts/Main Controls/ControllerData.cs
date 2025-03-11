@@ -60,10 +60,10 @@ public abstract class ControllerData
         NameChanged?.Invoke(this, name);
     }
 
-    public void SetWidth(float width)
+    public void SetWidth(float width, ProfileSaveData profile, float availableWidth)
     {
         _width = width;
-        WidthChanged?.Invoke(this, width);
+        WidthChanged?.Invoke(this, new WidthArgs(width, profile, availableWidth));
     }
 
     public float Width => _width <= NullWidth ? WidthRanges[GetType()].DefaultValue : _width;
@@ -80,7 +80,24 @@ public abstract class ControllerData
     public event EventHandler<bool> EnabledChanged;
     public event EventHandler<string> NameChanged;
     public event EventHandler<int> PositionChanged;
-    public event EventHandler<float> WidthChanged;
+    public event EventHandler<WidthArgs> WidthChanged;
+
+    public readonly struct WidthArgs
+    {
+        public readonly float Width;
+        [NonSerialized]
+        public readonly ProfileSaveData Profile;
+
+        [NonSerialized] public readonly float AvailableWidth;
+        
+        
+        public WidthArgs(float width, ProfileSaveData profile, float availableWidth)
+        {
+            Width = width;
+            Profile = profile;
+            AvailableWidth = availableWidth;
+        }
+    }
     
     [NonSerialized]
     private EventHandler _onDestroyRequested;

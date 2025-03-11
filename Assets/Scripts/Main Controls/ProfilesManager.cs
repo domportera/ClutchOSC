@@ -29,6 +29,10 @@ public class ProfilesManager : MonoBehaviour
     [SerializeField]
     private Button _saveAsButton;
     
+    [Header("Profile Options")]
+    [SerializeField] 
+    private Toggle _toggleSpanWidth;
+    
     [Header("Dynamic UI Elements")]
     [SerializeField]
     private GameObject _profileLoadButtonPrefab;
@@ -79,12 +83,14 @@ public class ProfilesManager : MonoBehaviour
             directoryInfo.Create();
         }
         
-        var defaultProfile = new ProfileSaveData(ControlsManager.DefaultControllers, DefaultSaveName);
+        var defaultProfile = new ProfileSaveData(ControlsManager.DefaultControllers, DefaultSaveName, false);
         AddToProfileButtons(defaultProfile);
 
         SortProfileButtons();
         
         ProfileChanged += profile => Debug.Log($"Profile changed to {profile.Name}", this);
+        ProfileChanged += profile => _toggleSpanWidth.SetIsOnWithoutNotify(profile.SpanWidth);
+        _toggleSpanWidth.onValueChanged.AddListener(OnSpanWidthToggled);
         SetActiveProfile(GetOrUpdateDefaultProfile());
     }
 
@@ -159,7 +165,7 @@ public class ProfilesManager : MonoBehaviour
         
         if (defaultProfile == null)
         {
-            defaultProfile = new ProfileSaveData(ControlsManager.DefaultControllers, DefaultSaveName);
+            defaultProfile = new ProfileSaveData(ControlsManager.DefaultControllers, DefaultSaveName, false);
             AddToProfileButtons(defaultProfile);
             SortProfileButtons();
         }
@@ -287,6 +293,11 @@ public class ProfilesManager : MonoBehaviour
         _profileWindow.SetActive(!_profileWindow.activeSelf);
 	}
 
+    private void OnSpanWidthToggled(bool e)
+    {
+        
+    }
+
     private static bool SaveProfile(ProfileSaveData saveData)
     {
         var profileName = saveData.Name;
@@ -333,7 +344,7 @@ public class ProfilesManager : MonoBehaviour
         {
             //add this profile to  working profiles in profile selection ui
             //switch to this profile
-            var profile = new ProfileSaveData(ControlsManager.ActiveProfile.AllControllers, profileName);
+            var profile = new ProfileSaveData(ControlsManager.ActiveProfile.AllControllers, profileName, ControlsManager.ActiveProfile.SpanWidth);
             var saved = SaveProfile(profile);
 
             if (!saved)
@@ -392,6 +403,8 @@ public class ProfileSaveData
     [FormerlySerializedAs("_profileName")] [FormerlySerializedAs("name")] [SerializeField]
     private string _name = string.Empty;
 
+    [SerializeField] private bool _spanWidth = false;
+
     //each type of control data has to be split into its own type-specific list for JsonUtility to agree with it
     [FormerlySerializedAs("faderData")] [SerializeField]
     private List<FaderData> _faderData = new();
@@ -401,8 +414,9 @@ public class ProfileSaveData
     public int ControllerCount => _faderData.Count + _controller2DData.Count;
         
     public bool IsBuiltInDefault => _name == ProfilesManager.DefaultSaveName;
+
     
-    public ProfileSaveData(IEnumerable<ControllerData> controllerData, string name)
+    public ProfileSaveData(IEnumerable<ControllerData> controllerData, string name, bool spanWidth)
     {
         foreach (var data in controllerData)
         {
@@ -428,9 +442,30 @@ public class ProfileSaveData
         }
     }
 
-    public IEnumerable<ControllerData> AllControllers => _faderData.Cast<ControllerData>().Concat(_controller2DData);
+    [NonSerialized]
+    private readonly List<ControllerData> _allControllers = new();
+    public IReadOnlyList<ControllerData> AllControllers
+    {
+        get
+        {
+            // todo - optimize
+            _allControllers.Clear();
+            for(int i = 0; i < _faderData.Count; i++)
+            {
+                _allControllers.Add(_faderData[i]);
+            }
+            for(int i = 0; i < _controller2DData.Count; i++)
+            {
+                _allControllers.Add(_controller2DData[i]);
+            }
+
+            return _allControllers;
+        }
+    }
 
     public string Name => _name;
+
+    public bool SpanWidth => _spanWidth;
 
     public bool RemoveController(ControllerData config)
     {

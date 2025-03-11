@@ -9,18 +9,44 @@ public class ControlsManager : MonoBehaviour
     #region MonoBehaviour
     [SerializeField] private RectTransform _controllerParent;
     [SerializeField] private ControllerPrefabs[] _controllerPrefabs;
+    
+    private enum ControllerExpansionState { Uninitialized, Normal, SpanWidth }
+    
+    private ScreenOrientation _lastOrientation;
+    private int _previousScreenWidth;
 
     private void Awake()
     {
         _controllerParentInstance = _controllerParent;
         _controllerPrefabsInstance = _controllerPrefabs.ToDictionary(x => x.ControlType, x => x.ControlPrefab);
         ProfilesManager.ProfileChanged += ApplyProfile;
+        _previousScreenWidth = Screen.width;
     }
 
     private void Update()
     {
         while(ActionQueue.TryDequeue(out var action))
             action.Invoke();
+
+        var currentScreenWidth = Screen.width;
+        if (currentScreenWidth != _previousScreenWidth)
+        {
+            ExpansionState = ControllerExpansionState.Uninitialized;
+        }
+        
+        if (ExpansionState == ControllerExpansionState.Uninitialized
+            || ExpansionState == ControllerExpansionState.Normal && ActiveProfile.SpanWidth
+            || ExpansionState == ControllerExpansionState.SpanWidth && !ActiveProfile.SpanWidth)
+        {
+            _previousScreenWidth = currentScreenWidth;
+            
+            // update controller widths
+            ExpansionState = ActiveProfile.SpanWidth ? ControllerExpansionState.SpanWidth : ControllerExpansionState.Normal;
+            foreach (var data in ActiveProfile.AllControllers)
+            {
+                data.SetWidth(data.Width, ActiveProfile);
+            }
+        }
     }
     
     #endregion MonoBehaviour
@@ -30,8 +56,19 @@ public class ControlsManager : MonoBehaviour
     private static ProfilesManager _profilesManagerInstance;
     private static RectTransform _controllerParentInstance;
     private static Dictionary<ControllerType, GameObject> _controllerPrefabsInstance;
-    
-    internal static ProfileSaveData ActiveProfile;
+
+    private static ProfileSaveData _activeProfilePrivate;
+    internal static ProfileSaveData ActiveProfile
+    {
+        get => _activeProfilePrivate;
+        private set
+        {
+            _activeProfilePrivate = value;
+            ExpansionState = ControllerExpansionState.Uninitialized;
+        }
+    }
+
+    private static ControllerExpansionState ExpansionState = ControllerExpansionState.Uninitialized;
     
 
     #region Default Controller Values
@@ -194,5 +231,14 @@ public class ControlsManager : MonoBehaviour
     {
         [FormerlySerializedAs("controlType")] public ControllerType ControlType;
         [FormerlySerializedAs("controlPrefab")] public GameObject ControlPrefab;
+    }
+
+    public static void SetSpanWidth(bool arg0)
+    {
+    }
+
+    public static void ForceToggleWidthRefresh()
+    {
+        ExpansionState = ControllerExpansionState.Uninitialized;
     }
 }

@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text.RegularExpressions;
 using PopUpWindows;
 using UnityEngine;
 using UnityEngine.Events;
@@ -72,6 +71,7 @@ public partial class UIManager : MonoBehaviour
 
         // initialize grid layout for options buttons
         _sliderOptionsButtonLayout.cellSize = _faderOptionsActivationPrefab.GetComponent<RectTransform>().rect.size;
+
     }
 
     void Start()
@@ -152,7 +152,7 @@ public partial class UIManager : MonoBehaviour
         SwitchOptionsButtonSorting(_sortOptionsByName);
         
         destroyFunc = () => DestroyUiGroup(group);
-
+        
         void DestroyUiGroup(ControllerUIGroup group)
         {
             _controllerUIs.Remove(group);

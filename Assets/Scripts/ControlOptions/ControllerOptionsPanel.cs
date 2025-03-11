@@ -79,7 +79,7 @@ public abstract class ControllerOptionsPanel : MonoBehaviour
         _controlData.SetName(controllerName);
 
         var width = ConvertSliderValueToWidth((int)WidthSlider.value);
-        _controlData.SetWidth(width);
+        _controlData.SetWidth(width, ControlsManager.ActiveProfile);
         UIManager.Instance.RefreshFaderLayoutGroup();
         Close();
     }
