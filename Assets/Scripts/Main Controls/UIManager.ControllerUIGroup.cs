@@ -13,6 +13,7 @@ public partial class UIManager
         private readonly Func<GameObject> _createOptionsMenu;
 
         public event EventHandler DeletionRequested;
+        private Text _buttonText;
 
         public ControllerUIGroup(ControllerData config, GameObject optionsActivateButtonPrefab, RectTransform optionsButtonParent, ISortingMember controlObject, Func<GameObject> createOptionsMenu)
         {
@@ -25,14 +26,25 @@ public partial class UIManager
             OptionButtonTransform = (RectTransform)buttonObj.transform;
             var activateOptionsButton = buttonObj.GetComponentInChildren<ButtonExtended>();
             activateOptionsButton.gameObject.name = config.Name + " Options Button";
-            activateOptionsButton.GetComponentInChildren<Text>().text = config.Name; // change visible button title
+            
+            _buttonText = activateOptionsButton.GetComponentInChildren<Text>();
+            OnNameChanged(this, config.Name);
             activateOptionsButton.OnClick.AddListener(() => { SetControllerOptionsActive(true); });
             activateOptionsButton.OnPointerHeld.AddListener(Delete);
+
+            config.NameChanged += OnNameChanged;
+            
             SetControllerOptionsActive(false);
 
             var activationToggle = buttonObj.GetComponentInChildren<Toggle>();
             activationToggle.onValueChanged.AddListener(ToggleControlVisibility);
             activationToggle.SetIsOnWithoutNotify(config.Enabled);
+        }
+
+        private void OnNameChanged(object sender, string e)
+        {
+            // change the button text to the title of the controller
+            _buttonText.text = e;
         }
 
         private void Delete()
@@ -70,6 +82,8 @@ public partial class UIManager
             if(_optionsMenu)
                 Destroy(_optionsMenu);
             Destroy(OptionButtonTransform.gameObject);
+            _buttonText = null;
+            ControllerData.NameChanged -= OnNameChanged;
         }
     }
 }
