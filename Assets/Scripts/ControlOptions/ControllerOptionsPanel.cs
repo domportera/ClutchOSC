@@ -110,6 +110,12 @@ public abstract class ControllerOptionsPanel : MonoBehaviour
 
     private bool VerifyUniqueName(string potentialName)
     {
+        if (string.IsNullOrWhiteSpace(potentialName))
+        {
+            PopUpController.Instance.ErrorWindow("Name cannot be empty.");
+            return false;
+        }
+        
         var invalid = ControlsManager.ActiveProfile.AllControllers
             .Where(data => data != _controlData)
             .Any(data => data.Name == potentialName);
