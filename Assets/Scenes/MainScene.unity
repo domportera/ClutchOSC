@@ -12320,7 +12320,7 @@ MonoBehaviour:
   _closePresetWindowButton: {fileID: 556710550}
   _presetWindow: {fileID: 1013280161}
   _savePresetButton: {fileID: 1335889982}
-  _userPresetSorter: {fileID: 0}
+  _userPresetSorter: {fileID: 1371377522}
 --- !u!224 &1229979897 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 504021911910472798, guid: 81ef0c4e70dab9a44a5af93bfaf1e317,
@@ -13722,6 +13722,18 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_HorizontalFit: 0
   m_VerticalFit: 2
+--- !u!114 &1371377522 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 6263833543518558492, guid: 6661dde7293288248b01ced25733c511,
+    type: 3}
+  m_PrefabInstance: {fileID: 1461844463}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 88f9a3bdbe2f5cb4f9ed6e5bde67d153, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!114 &1375258503 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 4444052603946622570, guid: 08c195d1a9110074eb4278701201a3f4,

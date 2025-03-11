@@ -886,7 +886,7 @@ PrefabInstance:
     - target: {fileID: 5042876148843710101, guid: c983b91d6bdcbe04fa73deea2eae9c3f,
         type: 3}
       propertyPath: m_Size
-      value: 0.6242703
+      value: 0.94481486
       objectReference: {fileID: 0}
     - target: {fileID: 5042876148843710101, guid: c983b91d6bdcbe04fa73deea2eae9c3f,
         type: 3}
@@ -1912,7 +1912,7 @@ PrefabInstance:
     - target: {fileID: 5042876148843710101, guid: c983b91d6bdcbe04fa73deea2eae9c3f,
         type: 3}
       propertyPath: m_Size
-      value: 0.5698237
+      value: 0.86241144
       objectReference: {fileID: 0}
     - target: {fileID: 5042876148843710101, guid: c983b91d6bdcbe04fa73deea2eae9c3f,
         type: 3}
@@ -2657,6 +2657,21 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: Control Name
+      objectReference: {fileID: 0}
+    - target: {fileID: 4743546503283219040, guid: d00d406103daa36459ab6903f056c18d,
+        type: 3}
+      propertyPath: m_ContentType
+      value: 9
+      objectReference: {fileID: 0}
+    - target: {fileID: 4743546503283219040, guid: d00d406103daa36459ab6903f056c18d,
+        type: 3}
+      propertyPath: m_KeyboardType
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4743546503283219040, guid: d00d406103daa36459ab6903f056c18d,
+        type: 3}
+      propertyPath: m_CharacterValidation
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 5937110715140160397, guid: d00d406103daa36459ab6903f056c18d,
         type: 3}

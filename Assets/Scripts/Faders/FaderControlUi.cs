@@ -17,6 +17,7 @@ public sealed class FaderControlUi : MonoBehaviour, ISortingMember
     private ControllerData _controllerData;
     private RectTransform _rectTransform;
     private Vector2 _initialSizeDelta;
+    private string _previousValueText;
 
     private void Awake()
     {
@@ -32,17 +33,22 @@ public sealed class FaderControlUi : MonoBehaviour, ISortingMember
         var rectTransform = GetComponent<RectTransform>();
         _initialSizeDelta = rectTransform.sizeDelta;
 
-        var displayName = controlData.Name;
-        _label.text = displayName;
-        name = displayName + " Fader";
         InitializeFaderInteraction();
         InitializeSortingButtons();
         
         controlData.EnabledChanged += OnEnabledChanged;
         controlData.WidthChanged += OnWidthChanged;
+        controlData.NameChanged += OnNameChanged;
         OnWidthChanged(this, controlData.Width);
         OnEnabledChanged(this, controlData.Enabled);
+        OnNameChanged(this, controlData.Name);
         _controllerData = controlData;
+    }
+
+    private void OnNameChanged(object sender, string displayName)
+    {
+        _label.text = displayName;
+        name = displayName + " Fader";
     }
 
     private void OnWidthChanged(object sender, float width)
@@ -60,14 +66,21 @@ public sealed class FaderControlUi : MonoBehaviour, ISortingMember
     {
         _controllerData.EnabledChanged -= OnEnabledChanged;
         _controllerData.WidthChanged -= OnWidthChanged;
+        _controllerData.NameChanged -= OnNameChanged;
     }
 
     // Update is called once per frame
     private void Update()
     {
-        _axisController.Update(Time.deltaTime);
+        _axisController.Update(Time.unscaledDeltaTime);
         _slider.SetValueWithoutNotify(_axisController.SmoothValue);
-        _valueText.text = _axisController.LatestSentValue;
+
+        var latestText = _axisController.LatestSentValue;
+        if (latestText != _previousValueText)
+        {
+            _valueText.text = latestText;
+            _previousValueText = latestText;
+        }
     }
 
     private void InitializeFaderInteraction()

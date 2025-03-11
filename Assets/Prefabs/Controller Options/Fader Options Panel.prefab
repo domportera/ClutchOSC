@@ -521,6 +521,16 @@ PrefabInstance:
       propertyPath: m_Name
       value: Control Name
       objectReference: {fileID: 0}
+    - target: {fileID: 4743546503283219040, guid: d00d406103daa36459ab6903f056c18d,
+        type: 3}
+      propertyPath: m_KeyboardType
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4743546503283219040, guid: d00d406103daa36459ab6903f056c18d,
+        type: 3}
+      propertyPath: m_CharacterValidation
+      value: 3
+      objectReference: {fileID: 0}
     - target: {fileID: 5937110715140160397, guid: d00d406103daa36459ab6903f056c18d,
         type: 3}
       propertyPath: colorType
